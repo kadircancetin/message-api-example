@@ -9,7 +9,7 @@ class BaseViewTestCase(TestCase):
         return APIClient()
 
     @classmethod
-    def create_test_user_and_get_client(cls, **user_data):
+    def create_user_and_get_client(cls, **user_data):
         user = UserFactory(**user_data)
         client = APIClient()
         client.force_authenticate(user=user)
