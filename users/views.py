@@ -28,8 +28,18 @@ class UserLoginView(APIView):
     def create_valid_login_log(self, user):
         Log(user=user, type=Log.Types.VALID_LOGIN).save()
 
-    def create_invalid_login_log(self):
-        Log(type=Log.Types.INVALID_LOGIN, user=User.objects.first()).save()
+    def create_invalid_login_log(self, serializer):
+        username = self.request.data['username']
+        if username:
+            try:
+                Log(
+                    type=Log.Types.INVALID_LOGIN,
+                    user=User.objects.get(username=username),
+                ).save()
+            except User.DoesNotExist:
+                Log(type=Log.Types.INVALID_LOGIN).save()
+        else:
+            Log(type=Log.Types.INVALID_LOGIN).save()
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(
@@ -37,7 +47,7 @@ class UserLoginView(APIView):
         )
 
         if not serializer.is_valid():
-            self.create_invalid_login_log()
+            self.create_invalid_login_log(serializer)
             serializer.is_valid(raise_exception=True)
 
         user = serializer.validated_data["user"]
