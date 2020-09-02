@@ -23,9 +23,9 @@ class MessageCreateViewTestCase(BaseViewTestCase):
 
     def test_permissions(self):
         response = self.anonymous_client.get(self.user1_path)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         response = self.anonymous_client.post(self.user1_path, data=self.example_data)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         response = self.user1_client.get(self.user1_path)
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
@@ -38,7 +38,7 @@ class MessageCreateViewTestCase(BaseViewTestCase):
         self.assertEqual(message.content, self.example_content)
         self.assertEqual(message.sender, self.user1)
         self.assertEqual(message.reciever, self.user2)
-        self.assertEqual(message.blocked, False)
+        self.assertEqual(message.is_blocked, False)
 
     def test_post_new_message_to_blocked_user(self):
         BlockFactory(blocker=self.user2, blocked=self.user1)
@@ -48,7 +48,7 @@ class MessageCreateViewTestCase(BaseViewTestCase):
         self.assertEqual(message.content, self.example_content)
         self.assertEqual(message.sender, self.user1)
         self.assertEqual(message.reciever, self.user2)
-        self.assertEqual(message.blocked, True)
+        self.assertEqual(message.is_blocked, True)
 
     def test_get_meesages(self):
         self.assertFalse(
@@ -81,9 +81,9 @@ class MessageCreateViewTestCase(BaseViewTestCase):
         )
 
         messages_not_blocked = MessageFactory(
-            sender=self.user1, reciever=self.user2, blocked=False
+            sender=self.user1, reciever=self.user2, is_blocked=False
         )
-        MessageFactory(sender=self.user1, reciever=self.user2, blocked=True)
+        MessageFactory(sender=self.user1, reciever=self.user2, is_blocked=True)
 
         response = self.user1_client.get(self.user2_path, data=self.example_data)
         self.assertEqual(response.data["count"], 1)

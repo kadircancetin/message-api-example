@@ -9,7 +9,7 @@ class Message(models.Model):
         "auth.User", on_delete=models.CASCADE, related_name="recieved_messages"
     )
     content = models.TextField()
-    blocked = models.BooleanField(default=False)
+    is_blocked = models.BooleanField(default=False)
     creation_datetime = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

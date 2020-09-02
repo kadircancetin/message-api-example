@@ -9,4 +9,4 @@ class MessageFactory(factory.django.DjangoModelFactory):
     sender = factory.SubFactory(UserFactory)
     reciever = factory.SubFactory(UserFactory)
     content = factory.Faker("sentence")
-    blocked = False
+    is_blocked = False

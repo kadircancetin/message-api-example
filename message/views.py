@@ -21,7 +21,7 @@ class MessageListCreateView(ListCreateAPIView):
         return Message.objects.filter(
             (Q(reciever=self.request.user) & Q(sender=self.other_user))
             | (Q(sender=self.request.user) & Q(reciever=self.other_user))
-        ).filter(blocked=False)
+        ).filter(is_blocked=False)
 
     def get_serializer_context(self):
         serializer_context = super().get_serializer_context()

@@ -63,7 +63,7 @@ class BlockUserViewTestCase(BaseViewTestCase):
 
     def test_permissions(self):
         response = self.anonymous_client.post(self.block_user2_path)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         response = self.user1_client.post(self.block_user2_path)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -111,7 +111,7 @@ class UnBlockUserView(BaseViewTestCase):
 
     def test_permissions(self):
         response = self.anonymous_client.post(self.unblock_path)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         response = self.blocker_client.post(self.unblock_path)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

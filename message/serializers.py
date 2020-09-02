@@ -28,6 +28,6 @@ class MessageSerializer(serializers.ModelSerializer):
         validated_data["sender"] = sender
         validated_data["reciever"] = reciever
         if Block.objects.filter(blocker=reciever, blocked=sender).exists():
-            validated_data['blocked'] = True
+            validated_data['is_blocked'] = True
 
         return super().create(validated_data)
