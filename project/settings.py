@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django_extensions",
     # Project apps
     "users",
+    "message",
 ]
 
 MIDDLEWARE = [
@@ -124,5 +125,7 @@ STATIC_URL = "/static/"
 
 
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAdminUser",]
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAdminUser",],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 100,
 }

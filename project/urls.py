@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from message.views import MessageListCreateView
 from rest_framework.authtoken.views import obtain_auth_token
 from users.views import UserCreateView, BlockUserView, UnBlockUserView
 
@@ -25,4 +26,6 @@ urlpatterns = [
     path("user/register/", UserCreateView.as_view(), name="user-create"),
     path("user/block/<int:user_id>/", BlockUserView.as_view(), name="block-user"),
     path("user/unblock/<int:user_id>/", UnBlockUserView.as_view(), name="block-user"),
+    # Messages
+    path("message/<int:user_id>/", MessageListCreateView.as_view(), name="user-create"),
 ]
