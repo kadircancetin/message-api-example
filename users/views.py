@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
+from django.db import transaction
 from django.shortcuts import get_object_or_404
+from message.models import Message
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -28,7 +30,13 @@ class BlockUserView(APIView):
 class UnBlockUserView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @transaction.atomic
     def post(self, *args, **kwargs):
         blocked = get_object_or_404(User.objects, id=kwargs["user_id"])
         Block.objects.filter(blocker=self.request.user, blocked=blocked).delete()
+
+        Message.objects.filter(
+            sender=blocked, reciever=self.request.user, is_blocked=True
+        ).update(is_blocked=False)
+
         return Response(data={}, status=status.HTTP_204_NO_CONTENT)
