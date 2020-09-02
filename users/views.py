@@ -4,6 +4,8 @@ from django.shortcuts import get_object_or_404
 from logs.models import Log
 from message.models import Message
 from rest_framework import status
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -17,6 +19,33 @@ class UserCreateView(CreateAPIView):
     permission_classes = [AllowAny]
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+class UserLoginView(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = AuthTokenSerializer
+
+    def create_valid_login_log(self, user):
+        Log(user=user, type=Log.Types.VALID_LOGIN).save()
+
+    def create_invalid_login_log(self):
+        Log(type=Log.Types.INVALID_LOGIN, user=User.objects.first()).save()
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(
+            data=request.data, context={"request": request}
+        )
+
+        if not serializer.is_valid():
+            self.create_invalid_login_log()
+            serializer.is_valid(raise_exception=True)
+
+        user = serializer.validated_data["user"]
+
+        with transaction.atomic():
+            token, created = Token.objects.get_or_create(user=user)
+            self.create_valid_login_log(user)
+            return Response({"token": token.key})
 
 
 class BlockUserView(APIView):

@@ -49,17 +49,38 @@ class UserLoginTestCase(BaseViewTestCase):
             "password": self.password,
         }
 
-    def test_successfully_login(self):
+    def test_valid_login(self):
         response = self.anonymous_client.post(self.path, self.example_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         token = Token.objects.get(key=response.data["token"])
         self.assertEqual(token.user, self.user)
 
-    def test_unsuccessfully_login(self):
+    def test_invalid_login(self):
         self.example_data["password"] = "wrongpassword"
         response = self.anonymous_client.post(self.path, self.example_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_valid_login_log_creation(self):
+        self.assertFalse(Log.objects.all().exists())
+        response = self.anonymous_client.post(self.path, self.example_data)
+        token = Token.objects.get(key=response.data["token"])
+        self.assertTrue(Log.objects.all().exists())
+
+        log = Log.objects.first()
+        self.assertEqual(log.type, Log.Types.VALID_LOGIN)
+        self.assertEqual(log.user, token.user)
+
+    def test_invalid_login_log_creation(self):
+        self.assertFalse(Log.objects.all().exists())
+
+        self.example_data["password"] = "wrongpassword"
+        self.anonymous_client.post(self.path, self.example_data)
+
+        self.assertTrue(Log.objects.all().exists())
+
+        log = Log.objects.first()
+        self.assertEqual(log.type, Log.Types.INVALID_LOGIN)
 
 
 class BlockUserViewTestCase(BaseViewTestCase):
