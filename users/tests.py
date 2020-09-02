@@ -1,4 +1,5 @@
 from core.tests import BaseViewTestCase
+from logs.models import Log
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 
@@ -26,6 +27,14 @@ class UserCreateViewTestCase(BaseViewTestCase):
 
         response = self.anonymous_client.post(self.path, self.example_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_creation_log(self):
+        self.assertFalse(Log.objects.all().exists())
+        self.anonymous_client.post(self.path, self.example_data)
+        self.assertTrue(Log.objects.all().exists())
+
+        log = Log.objects.first()
+        self.assertEqual(log.user.username, self.example_data["username"])
 
 
 class UserLoginTestCase(BaseViewTestCase):
@@ -98,6 +107,17 @@ class BlockUserViewTestCase(BaseViewTestCase):
             Block.objects.filter(blocker=self.user1, blocked=self.user2).count(), 1
         )
 
+    def test_block_log_creation(self):
+        self.assertFalse(Log.objects.all().exists())
+
+        self.user1_client.post(self.block_user2_path)
+        self.assertTrue(Log.objects.all().exists())
+
+        log = Log.objects.first()
+        self.assertEqual(log.user, self.user1)
+        self.assertEqual(log.affected_user, self.user2)
+        self.assertEqual(log.type, Log.Types.BLOCK)
+
 
 class UnBlockUserView(BaseViewTestCase):
     def setUp(self):
@@ -131,3 +151,14 @@ class UnBlockUserView(BaseViewTestCase):
         self.assertFalse(
             Block.objects.filter(blocker=self.blocker, blocked=self.blocked).exists()
         )
+
+    def test_unblock_log_creation(self):
+        self.assertFalse(Log.objects.all().exists())
+
+        self.blocker_client.post(self.unblock_path)
+        self.assertTrue(Log.objects.all().exists())
+
+        log = Log.objects.first()
+        self.assertEqual(log.user, self.blocker)
+        self.assertEqual(log.affected_user, self.blocked)
+        self.assertEqual(log.type, Log.Types.UN_BLOCK)

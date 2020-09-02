@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     # Project apps
     "users",
     "message",
+    "logs",
 ]
 
 MIDDLEWARE = [

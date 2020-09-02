@@ -1,4 +1,5 @@
 from core.tests import BaseViewTestCase
+from logs.models import Log
 from rest_framework import status
 from users.factories import BlockFactory
 
@@ -88,3 +89,13 @@ class MessageCreateViewTestCase(BaseViewTestCase):
         response = self.user1_client.get(self.user2_path, data=self.example_data)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["results"][0]["id"], messages_not_blocked.id)
+
+    def test_message_send_log(self):
+        self.assertFalse(Log.objects.all().exists())
+        self.user1_client.post(self.user2_path, data=self.example_data)
+        self.assertTrue(Log.objects.all().exists())
+
+        log = Log.objects.first()
+        self.assertEqual(log.user, self.user1)
+        self.assertEqual(log.affected_user, self.user2)
+        self.assertEqual(log.type, Log.Types.MESSAGE_SEND)

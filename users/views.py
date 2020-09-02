@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+from logs.models import Log
 from message.models import Message
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
@@ -21,9 +22,18 @@ class UserCreateView(CreateAPIView):
 class BlockUserView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @transaction.atomic
     def post(self, *args, **kwargs):
         blocked = get_object_or_404(User.objects, id=kwargs["user_id"])
-        Block.objects.get_or_create(blocker=self.request.user, blocked=blocked)
+        _, created = Block.objects.get_or_create(
+            blocker=self.request.user, blocked=blocked
+        )
+
+        if created:
+            Log(
+                type=Log.Types.BLOCK, user=self.request.user, affected_user=blocked
+            ).save()
+
         return Response(data={}, status=status.HTTP_201_CREATED)
 
 
@@ -33,7 +43,14 @@ class UnBlockUserView(APIView):
     @transaction.atomic
     def post(self, *args, **kwargs):
         blocked = get_object_or_404(User.objects, id=kwargs["user_id"])
-        Block.objects.filter(blocker=self.request.user, blocked=blocked).delete()
+        delete_count = Block.objects.filter(
+            blocker=self.request.user, blocked=blocked
+        ).delete()
+
+        if delete_count:
+            Log(
+                type=Log.Types.UN_BLOCK, user=self.request.user, affected_user=blocked
+            ).save()
 
         Message.objects.filter(
             sender=blocked, reciever=self.request.user, is_blocked=True
