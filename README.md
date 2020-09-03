@@ -18,14 +18,12 @@ For installation:
 ```
 pip install -r requirements.txt
 python manage.py migrate
-
 ```
 
 For run:
 
 ```
 python manage.py runserver
-
 ```
 
 API INFO
@@ -34,7 +32,7 @@ Content type should be json and specify on the header like `Content-Type: applic
 
 END POINTS
 ============
-1. POST **/user/register/** (auth not required)
+## POST **/user/register/** (auth not required)
 - 201 if success
 - 400 if unseccess
 
@@ -48,7 +46,7 @@ example output
 {"username": "kahredic"}
 ```
 
-2. POST **/user/login/** (auth not required)
+## POST **/user/login/** (auth not required)
 - 200 if success
 - 400 if unseccess
 
@@ -62,7 +60,7 @@ output:
 {"token": "b4b88b698f5f40f4716194ce632edc66cb374b30"}
 ```
 
-3. POST **/user/block/<username>/**
+##  POST **/user/block/<username>/**
 - 201 if success
 - 401 if not auth
 
@@ -74,7 +72,7 @@ output:
 ```
 {}
 ```
-4. POST **/user/unblock/<username>/**
+##  POST **/user/unblock/<username>/**
 - 204 if success
 - 401 if not auth
 
@@ -86,7 +84,7 @@ output:
 ```
 {}
 ```
-5. GET **/message/<username>/**
+##  GET **/message/<username>/**
 - 200 if success
 - 401 if not auth
 input
@@ -123,7 +121,7 @@ output
 }
 ```
 
-6. POST **/message/<username>/**
+##  POST **/message/<username>/**
 - 201 if success
 - 401 if not auth
 input:
