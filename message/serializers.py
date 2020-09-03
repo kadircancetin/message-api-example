@@ -15,12 +15,14 @@ class MessageSerializer(serializers.ModelSerializer):
             "reciever",
             "content",
             "creation_datetime",
+            "read_datetime",
         )
         read_only_fields = (
             "id",
             "sender",
             "reciever",
             "creation_datetime",
+            "read_datetime",
         )
 
     @transaction.atomic

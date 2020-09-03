@@ -11,6 +11,7 @@ class Message(models.Model):
     content = models.TextField()
     is_blocked = models.BooleanField(default=False)
     creation_datetime = models.DateTimeField(auto_now_add=True)
+    read_datetime = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.sender}->{self.reciever}"

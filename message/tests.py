@@ -99,3 +99,15 @@ class MessageCreateViewTestCase(BaseViewTestCase):
         self.assertEqual(log.user, self.user1)
         self.assertEqual(log.affected_user, self.user2)
         self.assertEqual(log.type, Log.Types.MESSAGE_SEND)
+
+    def test_get_meesages_read_datetime_set(self):
+        message = MessageFactory(sender=self.user1, reciever=self.user2)
+        self.assertEqual(message.read_datetime, None)
+
+        self.user1_client.get(self.user2_path, data=self.example_data)
+        message = Message.objects.get(id=message.id)
+        self.assertEqual(message.read_datetime, None)
+
+        self.user2_client.get(self.user1_path, data=self.example_data)
+        message = Message.objects.get(id=message.id)
+        self.assertNotEqual(message.read_datetime, None)
