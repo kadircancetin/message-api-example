@@ -1,13 +1,13 @@
 INFORMATION
 ===========
 - [x] Login -  Logout
-- [x] Messageing
+- [x] Messaging
 - [x] Read old messages
 - [x] Block - Unblock User
 - [x] User activity logs (SIGN_UP, BLOCK, UN_BLOCK, MESSAGE_SEND, VALID_LOGIN, INVALID_LOGIN)
 - [x] Server error and info logging (on ./log_file)
-- [x] Message readtime
-- [x] **%95** test covearage
+- [x] Message read time
+- [x] **%95** test coverage
 - [ ] Dependency Injection
 
 INSTALLATION
@@ -34,7 +34,7 @@ END POINTS
 ============
 ## POST **/user/register/** (auth not required)
 - 201 if success
-- 400 if unseccess
+- 400 if unsuccess
 
 example input
 ```
@@ -48,7 +48,7 @@ example output
 
 ## POST **/user/login/** (auth not required)
 - 200 if success
-- 400 if unseccess
+- 400 if unsuccess
 
 input:
 ```
@@ -141,7 +141,7 @@ output:
 ```
 
 
-TEST COVARAGE
+TEST COVERAGE
 =============
 ```
 >> pip install coverage
