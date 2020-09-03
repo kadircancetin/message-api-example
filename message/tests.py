@@ -14,8 +14,8 @@ class MessageCreateViewTestCase(BaseViewTestCase):
 
         self.user1, self.user1_client = self.create_user_and_get_client()
         self.user2, self.user2_client = self.create_user_and_get_client()
-        self.user1_path = self.path.format(self.user1.id)
-        self.user2_path = self.path.format(self.user2.id)
+        self.user1_path = self.path.format(self.user1.username)
+        self.user2_path = self.path.format(self.user2.username)
 
         self.example_content = "naber"
         self.example_data = {

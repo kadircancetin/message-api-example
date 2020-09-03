@@ -17,7 +17,7 @@ class MessageListCreateView(ListCreateAPIView):
 
     @cached_property
     def other_user(self):
-        return get_object_or_404(User.objects.all(), **{"id": self.kwargs["user_id"]})
+        return get_object_or_404(User.objects.all(), **{"username": self.kwargs["username"]})
 
     def get_queryset(self):
         messages = Message.objects.filter(

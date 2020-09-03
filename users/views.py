@@ -63,7 +63,7 @@ class BlockUserView(APIView):
 
     @transaction.atomic
     def post(self, *args, **kwargs):
-        blocked = get_object_or_404(User.objects, id=kwargs["user_id"])
+        blocked = get_object_or_404(User.objects, username=kwargs["username"])
         _, created = Block.objects.get_or_create(
             blocker=self.request.user, blocked=blocked
         )
@@ -81,7 +81,7 @@ class UnBlockUserView(APIView):
 
     @transaction.atomic
     def post(self, *args, **kwargs):
-        blocked = get_object_or_404(User.objects, id=kwargs["user_id"])
+        blocked = get_object_or_404(User.objects, username=kwargs["username"])
         delete_count = Block.objects.filter(
             blocker=self.request.user, blocked=blocked
         ).delete()

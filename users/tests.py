@@ -97,7 +97,7 @@ class BlockUserViewTestCase(BaseViewTestCase):
         self.anonymous_client = self.get_anonymous_client()
         self.user1, self.user1_client = self.create_user_and_get_client()
         self.user2, self.user2_client = self.create_user_and_get_client()
-        self.block_user2_path = self.path.format(self.user2.id)
+        self.block_user2_path = self.path.format(self.user2.username)
 
     def test_permissions(self):
         response = self.anonymous_client.post(self.block_user2_path)
@@ -154,7 +154,7 @@ class UnBlockUserView(BaseViewTestCase):
         self.anonymous_client = self.get_anonymous_client()
         self.blocker, self.blocker_client = self.create_user_and_get_client()
         self.blocked, self.blocked_client = self.create_user_and_get_client()
-        self.unblock_path = self.path.format(self.blocked.id)
+        self.unblock_path = self.path.format(self.blocked.username)
 
         BlockFactory(blocker=self.blocker, blocked=self.blocked)
 
