@@ -60,7 +60,7 @@ output:
 {"token": "b4b88b698f5f40f4716194ce632edc66cb374b30"}
 ```
 
-##  POST **/user/block/<username>/**
+##  POST **/user/block/_username_/**
 - 201 if success
 - 401 if not auth
 
@@ -72,7 +72,7 @@ output:
 ```
 {}
 ```
-##  POST **/user/unblock/<username>/**
+##  POST **/user/unblock/_username_/**
 - 204 if success
 - 401 if not auth
 
@@ -84,7 +84,7 @@ output:
 ```
 {}
 ```
-##  GET **/message/<username>/**
+##  GET **/message/_username_/**
 - 200 if success
 - 401 if not auth
 input
@@ -121,7 +121,7 @@ output
 }
 ```
 
-##  POST **/message/<username>/**
+##  POST **/message/_username_/**
 - 201 if success
 - 401 if not auth
 input:
